@@ -1,3 +1,6 @@
+// Paste your live Render URL here! (No trailing slash at the end)
+const BACKEND_URL = 'https://achievable-fullstack.onrender.com';
+
 // Typewriter Effect
 document.addEventListener("DOMContentLoaded", () => {
     // Find every element with the class 'typewriter'
@@ -107,7 +110,7 @@ if (addBtn) {
 
         if (deadlineText) {
             console.log('Creating event on Google Calendar...');
-            fetch('http://localhost:3000/create-event', {
+            fetch('https://achievable-fullstack.onrender.com/create-event', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -169,7 +172,7 @@ window.deleteGoal = function(index) {
     if (goal.eventId) {
         console.log('Telling Google Calendar to delete event ID:', goal.eventId);
         
-        fetch('http://localhost:3000/delete-event', {
+        fetch('https://achievable-fullstack.onrender.com/delete-event', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -221,7 +224,7 @@ window.goalfinished = function(index) {
         if (goal.completed) {
             // If completed, mark it green in Google Calendar
             console.log('Telling Google Calendar to mark it green. ID:', goal.eventId);
-            fetch('http://localhost:3000/complete-event', {
+            fetch('https://achievable-fullstack.onrender.com/complete-event', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -243,7 +246,7 @@ window.goalfinished = function(index) {
             // If unchecked, reset the Google Calendar event to default color
             console.log('Telling Google Calendar to undo completion. ID:', goal.eventId);
             
-            fetch('http://localhost:3000/undo-complete-event', {
+            fetch('https://achievable-fullstack.onrender.com/undo-complete-event', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -276,7 +279,7 @@ if (clearAllBtn) {
             savedGoals.forEach(goal => {
                 if (goal.eventId) {
                     console.log('Telling Google Calendar to delete event ID:', goal.eventId);
-                    fetch('http://localhost:3000/delete-event', {
+                    fetch(`${BACKEND_URL}/delete-event`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ eventId: goal.eventId })
