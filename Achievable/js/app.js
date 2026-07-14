@@ -1,4 +1,4 @@
-// --- Typewriter Effect ---
+// Typewriter Effect
 document.addEventListener("DOMContentLoaded", () => {
     // Find every element with the class 'typewriter'
     const typewriterElements = document.querySelectorAll('.typewriter');
@@ -56,7 +56,7 @@ function displayGoals() {
         // Only show the deadline text if the user actually set one
         const deadlineHTML = goal.deadline ? `<p class="deadline-text">🗓️ Deadline: ${goal.deadline}</p>` : '';
 
-        // NEW: Check if the goal is syncing. If it failed to sync, stop showing it as syncing!
+        // Check if the goal is syncing. If it failed to sync, stop showing it as syncing!
         const isSyncing = goal.deadline && !goal.eventId && !goal.syncFailed;
         const syncHTML = isSyncing ? `<p style="color: #ffa500; font-size: 0.85rem; margin: 5px 0; font-style: italic;">Syncing with Google...</p>` : '';
 
@@ -144,8 +144,6 @@ if (addBtn) {
             })
             .catch(error => {
                 console.error('Error connecting to backend server:', error);
-                
-                // NEW: Server is offline completely. Mark as offline task.
                 const goalToUpdate = savedGoals.find(g => g.id === tempId);
                 if (goalToUpdate) {
                     goalToUpdate.syncFailed = true;
