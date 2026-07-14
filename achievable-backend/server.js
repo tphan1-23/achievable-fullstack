@@ -71,10 +71,110 @@ app.post('/create-event', async (req, res) => {
       resource: event,
     });
     
-    res.status(200).json({ success: true, link: response.data.htmlLink });
+    // UPDATED: Now sending back the response.data.id as eventId!
+    res.status(200).json({ 
+      success: true, 
+      link: response.data.htmlLink, 
+      eventId: response.data.id 
+    });
   } catch (error) {
     console.error('Error creating event:', error);
     res.status(500).json({ success: false, error: 'Could not add event to calendar.' });
+  }
+});
+
+// ROUTE 4: Mark the Event as Done
+// Updates the existing event to turn it green and add a checkmark
+app.post('/complete-event', async (req, res) => {
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const { eventId, title } = req.body;
+
+    // 1. Get the existing event details first using the ID
+    const existingEvent = await calendar.events.get({
+      calendarId: 'primary',
+      eventId: eventId
+    });
+
+    // 2. Overwrite the title and color, but keep everything else the same
+    await calendar.events.update({
+      calendarId: 'primary',
+      eventId: eventId,
+      resource: {
+        ...existingEvent.data,
+        summary: `✅ [DONE] ${title}`,
+        colorId: '2' // '2' is the Google Calendar code for Sage Green!
+      }
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ success: false, error: 'Could not update event.' });
+  }
+});
+
+// ROUTE 5: Revert the Event to Uncompleted (Undo)
+// Strips the checkmark/status and restores original calendar color
+app.post('/undo-complete-event', async (req, res) => {
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const { eventId } = req.body;
+
+    // 1. Fetch the event's current state from Google Calendar
+    const existingEvent = await calendar.events.get({
+      calendarId: 'primary',
+      eventId: eventId
+    });
+
+    // 2. Strip "✅ [DONE] " out of the title if it exists
+    let originalTitle = existingEvent.data.summary || '';
+    if (originalTitle.startsWith('✅ [DONE] ')) {
+      originalTitle = originalTitle.replace('✅ [DONE] ', '');
+    }
+
+    // 3. Create updated resource and remove the custom colorId property so it defaults back
+    const updatedEvent = {
+      ...existingEvent.data,
+      summary: originalTitle
+    };
+    delete updatedEvent.colorId; // Deleting colorId forces the default calendar color to return
+
+    // 4. Update the event
+    await calendar.events.update({
+      calendarId: 'primary',
+      eventId: eventId,
+      resource: updatedEvent
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error reverting event:', error);
+    res.status(500).json({ success: false, error: 'Could not revert uncompleted event.' });
+  }
+});
+
+// ROUTE 6: Delete the Event from Google Calendar
+app.post('/delete-event', async (req, res) => {
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const { eventId } = req.body;
+
+    // If there is no event ID, we can't delete it!
+    if (!eventId) {
+      return res.status(400).json({ success: false, error: 'No event ID provided' });
+    }
+
+    // Tell Google Calendar to permanently delete this event
+    await calendar.events.delete({
+      calendarId: 'primary',
+      eventId: eventId
+    });
+
+    res.status(200).json({ success: true, message: 'Event permanently deleted from calendar' });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({ success: false, error: 'Could not delete event from Google Calendar.' });
   }
 });
 
