@@ -15,29 +15,28 @@
 
 <body>
 
-    <div class="dashboard-container">
-        <h1 class="big-pink-font page-title">No Risk, No Story.</h1>
-        <p class="quote">"One step at a time"</p>
+    <div class="dashboard-container flow-up">
+        <h1 class="big-pink-font page-title flow-up">No Risk, No Story.</h1>
+        
+        <p class="quote flow-up delay-1 typewriter">"One step at a time"</p>
 
-        <div class="goal-creator">
+        <div class="goal-creator flow-up delay-2">
             <input type="text" id="goal-title" placeholder="Goal Title" autocomplete="off">
             <input type="text" id="goal-desc" placeholder="What exactly do you want?" autocomplete="off">
             <input type="date" id="goal-deadline" title="Set a deadline">
             <button id="add-goal-btn">Add Goal</button>
-</button>
         </div>
 
-        <div class="goals-grid" id="goals-grid">
-            </div>
+        <div class="goals-grid flow-up delay-3" id="goals-grid"></div>
 
-        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
+        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;" class="flow-up delay-4">
             <a href="http://localhost:3000/auth" target="_blank" class="back-btn calendar-btn">Connect Calendar</a>
             <button id="clear-all-btn" class="back-btn calendar-btn">Clear All Goals</button>
         </div>
     </div>
 
-    <script src="js/app.js">
-        
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script src="js/app.js"></script>
 </body>
 </html>

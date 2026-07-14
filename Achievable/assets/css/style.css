@@ -346,3 +346,44 @@ button.calendar-btn:hover {
     background-color: #ffb4c6;
     color: #ffffff;
 }
+
+/* --- Smooth Flow Up Animations --- */
+@keyframes flowUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(40px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.flow-up {
+    animation: flowUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Keeps it hidden until the animation begins */
+}
+
+/* Delays for the cascading waterfall effect */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* Typewriter Blinking Cursor */
+.typing-cursor::after {
+    content: '' !important; 
+    display: inline-block !important;
+    width: 1px !important;  
+    height: 1.1em !important; 
+    background-color: #333333 !important;
+    margin-left: 6px !important;
+    vertical-align: middle !important;
+    font-weight: normal !important; 
+    animation: blink 0.8s step-end infinite !important;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}

@@ -1,3 +1,29 @@
+// --- Typewriter Effect ---
+document.addEventListener("DOMContentLoaded", () => {
+    // Find every element with the class 'typewriter'
+    const typewriterElements = document.querySelectorAll('.typewriter');
+    
+    typewriterElements.forEach(el => {
+        const text = el.textContent; // Remember the original text
+        el.textContent = '';         // Erase it from the screen initially
+        el.classList.add('typing-cursor'); // Add the blinking cursor
+        
+        let i = 0;
+        
+        // Wait 600ms for the "flow-up" animation to finish before typing
+        setTimeout(() => {
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    el.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval); // Stop when finished!
+                }
+            }, 75); // 75ms per letter (adjust this number to type faster or slower)
+        }, 600); 
+    });
+});
+
 // Grab elements (Only declared once!)
 const goalsGrid = document.getElementById('goals-grid');
 const titleInput = document.getElementById('goal-title');
@@ -24,14 +50,14 @@ function displayGoals() {
     savedGoals.forEach((goal, index) => {
         const card = document.createElement('div');
         
-        // Add a 'completed' class to the card if it's finished
-        card.className = `goal-card ${goal.completed ? 'completed' : ''}`;
+        // Add a 'completed' class to the card if it's finished, and animate it!
+        card.className = `goal-card flow-up ${goal.completed ? 'completed' : ''}`;
         
         // Only show the deadline text if the user actually set one
         const deadlineHTML = goal.deadline ? `<p class="deadline-text">🗓️ Deadline: ${goal.deadline}</p>` : '';
 
-        // Check if the goal is still waiting for its Google Calendar ID
-        const isSyncing = goal.deadline && !goal.eventId;
+        // NEW: Check if the goal is syncing. If it failed to sync, stop showing it as syncing!
+        const isSyncing = goal.deadline && !goal.eventId && !goal.syncFailed;
         const syncHTML = isSyncing ? `<p style="color: #ffa500; font-size: 0.85rem; margin: 5px 0; font-style: italic;">Syncing with Google...</p>` : '';
 
         card.innerHTML = `
@@ -106,10 +132,26 @@ if (addBtn) {
                     }
                 } else {
                     console.error('Failed to add to calendar. Did you connect your account first?');
+                    
+                    // NEW: Server responded but failed. Mark as offline task.
+                    const goalToUpdate = savedGoals.find(g => g.id === tempId);
+                    if (goalToUpdate) {
+                        goalToUpdate.syncFailed = true;
+                        localStorage.setItem('userGoals', JSON.stringify(savedGoals));
+                        displayGoals(); 
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error connecting to backend server:', error);
+                
+                // NEW: Server is offline completely. Mark as offline task.
+                const goalToUpdate = savedGoals.find(g => g.id === tempId);
+                if (goalToUpdate) {
+                    goalToUpdate.syncFailed = true;
+                    localStorage.setItem('userGoals', JSON.stringify(savedGoals));
+                    displayGoals(); 
+                }
             });
         }
 
@@ -167,12 +209,20 @@ window.goalfinished = function(index) {
     localStorage.setItem('userGoals', JSON.stringify(savedGoals));
     displayGoals();
     
+    if (goal.completed) {
+        confetti({
+            particleCount: 150, 
+            spread: 90,        
+            origin: { y: 0.5 }, 
+            colors: ['#ffced9', '#dfc3ff', '#9ec7ff', '#fdffb4', '#ffffff'] 
+        });
+    }
+
     // Check if the goal actually has a calendar event attached to it
     if (goal.eventId) {
         if (goal.completed) {
             // If completed, mark it green in Google Calendar
             console.log('Telling Google Calendar to mark it green. ID:', goal.eventId);
-            
             fetch('http://localhost:3000/complete-event', {
                 method: 'POST',
                 headers: {
