@@ -1,4 +1,4 @@
-# 🎯 Achievable
+# Achievable
 
 [![Netlify Status](https://img.shields.io/badge/Deployed_on-Netlify-00C7B7?style=flat&logo=netlify)](https://achievable.netlify.app/achievable/index.html)
 [![Render Status](https://img.shields.io/badge/Hosted_on-Render-46E3B7?style=flat&logo=render)](https://achievable-fullstack.onrender.com)
@@ -10,7 +10,7 @@ Instead of juggling a separate to-do list app and a calendar app, Achievable bri
 
 ---
 
-## ✨ What can it do?
+## What can it do?
 
 - [x] **Secure Google Login:** Connects directly to your Google account using standard OAuth2.
 - [x] **Instant Syncing:** Add a deadline and a goal, and it instantly appears on your Google Calendar.
@@ -19,8 +19,6 @@ Instead of juggling a separate to-do list app and a calendar app, Achievable bri
 - [x] **Total Control:** Delete a goal in the app, and it vanishes from your calendar completely.
 
 ---
-
-## 🏗️ Built With
 
 **Frontend**
 * HTML5 & CSS3
