@@ -183,3 +183,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
 });
+
+// A simple route for the homepage so the Render link doesn't show an error
+app.get('/', (req, res) => {
+  res.send('Achievable Backend API is running successfully!');
+});
